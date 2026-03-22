@@ -6,8 +6,8 @@
 
 **A beautifully designed, privacy-first expense tracker — built as a Progressive Web App.**
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Netlify-00C7B7?style=for-the-badge&logo=netlify)](https://your-site.netlify.app)
-[![PWA](https://img.shields.io/badge/PWA-Ready-5A0FC8?style=for-the-badge&logo=pwa)](https://your-site.netlify.app)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Netlify-00C7B7?style=for-the-badge&logo=netlify)](https://walletix.netlify.app/)
+[![PWA](https://img.shields.io/badge/PWA-Ready-5A0FC8?style=for-the-badge&logo=pwa)](https://walletix.netlify.app/)
 [![License](https://img.shields.io/badge/License-Personal%20Use-blue?style=for-the-badge)](LICENSE)
 
 </div>
