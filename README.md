@@ -203,8 +203,8 @@ git push
 
 **Built by** — *speedy*
 
-[![GitHub](https://img.shields.io/badge/GitHub-yourusername-181717?style=flat&logo=github)](vkukadiya22)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-yourprofile-0A66C2?style=flat&logo=linkedin)](https://www.linkedin.com/in/ved-k-552337388?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app)
+[![GitHub](https://img.shields.io/badge/GitHub-vkukadiya22-181717?style=flat&logo=github)](vkukadiya22)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-vedk-0A66C2?style=flat&logo=linkedin)](https://www.linkedin.com/in/ved-k-552337388?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app)
 
 ---
 
