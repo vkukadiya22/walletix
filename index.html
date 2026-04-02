@@ -1204,7 +1204,7 @@
                 <option value="Education">&#128218; Education</option>
                 <option value="Travel">&#9992; Travel</option>
                 <option value="Repair">&#128295; Repair</option>
-                <option value="other">&#128176; Other...</option>
+                <option value="Other">&#128176; Other...</option>
               </select>
             </div>
           </div>
@@ -1307,6 +1307,8 @@
             <option>&#128241; Bills</option>
             <option>&#9992; Travel</option>
             <option>&#128218; Education</option>
+            <option>&#127873; Gift</option>
+            <option>&#128295; Repair</option>
             <option>&#128176; Other</option>
           </select></div>
       </div>
@@ -1368,7 +1370,7 @@
     function ic() { if (window.lucide) lucide.createIcons(); }
     document.addEventListener('DOMContentLoaded', ic);
     function setType(t) { cT = t; document.getElementById('btn-exp').className = 'type-btn' + (t === 'expense' ? ' ae' : ''); document.getElementById('btn-inc').className = 'type-btn' + (t === 'income' ? ' ai' : ''); ic(); }
-    function checkOther() { const v = document.getElementById('inp-cat').value; const w = document.getElementById('other-wrap'); v === 'other' ? (w.classList.add('show'), document.getElementById('inp-other').focus()) : (w.classList.remove('show'), document.getElementById('inp-other').value = ''); }
+    function checkOther() { const v = document.getElementById('inp-cat').value; const w = document.getElementById('other-wrap'); v === 'Other' ? (w.classList.add('show'), document.getElementById('inp-other').focus()) : (w.classList.remove('show'), document.getElementById('inp-other').value = ''); }
     function addTxn() {
       const n = document.getElementById('inp-name').value.trim();
       const a = parseFloat(document.getElementById('inp-amt').value);
@@ -1377,7 +1379,7 @@
       if (!a || a <= 0) { const el = document.getElementById('inp-amt'); el.style.borderColor = 'var(--red)'; el.focus(); setTimeout(() => el.style.borderColor = '', 1400); return; }
       const sel = document.getElementById('inp-cat');
       let ck = rc, cd = sel.options[sel.selectedIndex].text;
-      if (rc === 'other') { const c = document.getElementById('inp-other').value.trim(); if (!c) { const el = document.getElementById('inp-other'); el.style.borderColor = 'var(--red)'; el.focus(); setTimeout(() => el.style.borderColor = '', 1400); return; } ck = 'Other'; cd = '&#128176; ' + c; }
+      if (rc === 'Other') { const c = document.getElementById('inp-other').value.trim(); if (!c) { const el = document.getElementById('inp-other'); el.style.borderColor = 'var(--red)'; el.focus(); setTimeout(() => el.style.borderColor = '', 1400); return; } ck = 'Other'; cd = '&#128176; ' + c; }
       const nm = n || cd.replace(/^[^ ]+ /, '') || 'Transaction';
       txns.unshift({ id: Date.now(), name: nm, amt: a, catKey: ck, catDisplay: cd, date: d, type: cT });
       save(); render();
@@ -1459,9 +1461,9 @@
         var sp;
         if(period==='custom' && typeof bObj==='object'){
           var from=new Date(bObj.from); var to=new Date(bObj.to); to.setHours(23,59,59);
-          sp=txns.filter(function(t){var d=new Date(t.date);return t.type==='expense'&&(t.catDisplay===cat||t.cat===cat)&&d>=from&&d<=to;}).reduce(function(s,t){return s+t.amt;},0);
+          sp=txns.filter(function(t){var d=new Date(t.date);return t.type==='expense'&&(t.catDisplay===cat||t.catKey===cat.replace(/^\S+\s/,''))&&d>=from&&d<=to;}).reduce(function(s,t){return s+t.amt;},0);
         } else {
-          sp=txns.filter(function(t){var d=new Date(t.date);return t.type==='expense'&&(t.catDisplay===cat||t.cat===cat)&&d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();}).reduce(function(s,t){return s+t.amt;},0);
+          sp=txns.filter(function(t){var d=new Date(t.date);return t.type==='expense'&&(t.catDisplay===cat||t.catKey===cat.replace(/^\S+\s/,''))&&d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();}).reduce(function(s,t){return s+t.amt;},0);
         }
         var pct=Math.min((sp/lim)*100,100);
         var col=pct>=100?'var(--red)':pct>=75?'var(--yellow)':'var(--green)';
@@ -1575,12 +1577,18 @@ function editTxn(id) {
   document.getElementById('edit-amt').value = t.amt;
   document.getElementById('edit-date').value = t.date || '';
   document.getElementById('edit-type').value = t.type;
-  var sel = document.getElementById('edit-cat');
   for (var i = 0; i < sel.options.length; i++) {
     var optVal = sel.options[i].value;
-    if (optVal === t.catKey || sel.options[i].text.replace(/^\S+\s/, '') === (t.catDisplay || '').replace(/^\S+\s/, '')) {
+    if (optVal === t.catKey) {
       sel.selectedIndex = i; break;
     }
+  }
+  if (t.catKey === 'Other') {
+    document.getElementById('edit-other-wrap').classList.add('show');
+    document.getElementById('edit-other').value = (t.catDisplay || '').replace(/^\S+\s/, '');
+  } else {
+    document.getElementById('edit-other-wrap').classList.remove('show');
+    document.getElementById('edit-other').value = '';
   }
   document.getElementById('edit-modal').classList.add('show');
   ic();
@@ -1591,9 +1599,13 @@ function saveEditTxn() {
   if (idx === -1) return;
   var amt = parseFloat(document.getElementById('edit-amt').value);
   if (!amt || amt <= 0) { var el = document.getElementById('edit-amt'); el.style.borderColor='var(--red)'; el.focus(); setTimeout(function(){el.style.borderColor='';},1400); return; }
-  var sel = document.getElementById('edit-cat');
   var ck = sel.value;
   var cd = sel.options[sel.selectedIndex].text;
+  if (ck === 'Other') {
+    var desc = document.getElementById('edit-other').value.trim();
+    if (!desc) { document.getElementById('edit-other').style.borderColor='var(--red)'; return; }
+    cd = '&#128176; ' + desc;
+  }
   txns[idx].name = document.getElementById('edit-name').value.trim() || cd.replace(/^\S+\s/, '') || 'Transaction';
   txns[idx].amt = amt;
   txns[idx].date = document.getElementById('edit-date').value;
@@ -1604,6 +1616,7 @@ function saveEditTxn() {
   document.getElementById('edit-modal').classList.remove('show');
   showToast('Transaction updated', 'success');
 }
+function checkEditOther() { const v = document.getElementById('edit-cat').value; document.getElementById('edit-other-wrap').classList[v === 'Other' ? 'add' : 'remove']('show'); }
 function closeEditModal() { document.getElementById('edit-modal').classList.remove('show'); }
 
 function exportCSV() {
@@ -1682,7 +1695,7 @@ render(); setTimeout(ic, 200);
       <div class="iw">
         <label><i data-lucide="tag"></i> Category</label>
         <div class="inp-wrap"><span class="inp-icon"><i data-lucide="layers"></i></span>
-          <select class="inp" id="edit-cat">
+          <select class="inp" id="edit-cat" onchange="checkEditOther()">
             <option value="Food">&#127828; Food</option>
             <option value="Transport">&#128663; Transport</option>
             <option value="Shopping">&#128717; Shopping</option>
@@ -1702,6 +1715,12 @@ render(); setTimeout(ic, 200);
       <div class="iw">
         <label><i data-lucide="calendar-days"></i> Date</label>
         <div class="inp-wrap"><span class="inp-icon"><i data-lucide="calendar"></i></span><input class="inp" id="edit-date" type="date"></div>
+      </div>
+    </div>
+    <div class="form-row other-wrap" id="edit-other-wrap">
+      <div class="iw">
+        <label><i data-lucide="edit-3"></i> What is "Other"?</label>
+        <div class="inp-wrap"><span class="inp-icon"><i data-lucide="hash"></i></span><input class="inp" id="edit-other" placeholder="e.g. Pet care, Gym, Hobby..."></div>
       </div>
     </div>
     <div class="iw" style="margin-bottom:10px;">
